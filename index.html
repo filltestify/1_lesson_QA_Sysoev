@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Доставка еды — прототип</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Уличная кухня · доставка</p>
+      <h1 class="hero__title">Кухня у Дома</h1>
+      <p class="hero__tagline">быстро. остро. по-домашнему.</p>
+    </div>
+  </header>
+
+  <nav class="topbar">
+    <div class="topbar__nav">
+      <button type="button" id="nav-menu" class="topbar__link">Меню</button>
+      <button type="button" id="nav-history" class="topbar__link">Мои заказы</button>
+    </div>
+    <button type="button" id="cart-toggle" class="cart-badge">
+      Корзина <span id="cart-count">0</span> · <span id="cart-total">0</span> ₽
+    </button>
+  </nav>
+
+  <aside id="cart-panel" class="cart-panel" hidden>
+    <div class="cart-panel__awning" aria-hidden="true"></div>
+    <h2 class="cart-panel__title">Заказ</h2>
+    <ul id="cart-items"></ul>
+    <p class="cart-panel__total">Итого <span id="cart-panel-total">0</span> ₽</p>
+    <button type="button" id="cart-checkout-btn" disabled>Оформить заказ</button>
+    <button type="button" id="cart-close-btn">Закрыть</button>
+  </aside>
+
+  <main>
+    <section id="screen-menu" class="screen">
+      <h2 class="screen-title">Меню</h2>
+      <div id="menu-list"></div>
+    </section>
+
+    <section id="screen-checkout" class="screen" hidden>
+      <h2 class="screen-title">Оформление заказа</h2>
+      <form id="checkout-form" novalidate>
+        <label>
+          Имя
+          <input type="text" id="field-name" name="name">
+          <span class="error" id="error-name"></span>
+        </label>
+        <label>
+          Адрес доставки
+          <input type="text" id="field-address" name="address">
+          <span class="error" id="error-address"></span>
+        </label>
+        <label>
+          Телефон
+          <input type="tel" id="field-phone" name="phone">
+          <span class="error" id="error-phone"></span>
+        </label>
+        <label>
+          Комментарий
+          <textarea id="field-comment" name="comment"></textarea>
+        </label>
+        <fieldset>
+          <legend>Способ оплаты</legend>
+          <label><input type="radio" name="payment" value="cash" checked> Наличными курьеру</label>
+          <label><input type="radio" name="payment" value="card"> Картой курьеру</label>
+        </fieldset>
+        <label>
+          Время доставки
+          <select id="field-delivery-time" name="deliveryTime"></select>
+        </label>
+        <p class="checkout-total">К оплате: <span id="checkout-total">0</span> ₽</p>
+        <button type="submit">Подтвердить заказ</button>
+        <button type="button" id="checkout-back-btn">Назад в меню</button>
+      </form>
+    </section>
+
+    <section id="screen-confirmation" class="screen" hidden>
+      <h2 class="screen-title">Заказ оформлен</h2>
+      <div id="confirmation-details"></div>
+      <button type="button" id="confirmation-menu-btn">Вернуться в меню</button>
+    </section>
+
+    <section id="screen-history" class="screen" hidden>
+      <h2 class="screen-title">Мои заказы</h2>
+      <div id="history-list"></div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
