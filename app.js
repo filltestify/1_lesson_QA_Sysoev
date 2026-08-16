@@ -1,4 +1,11 @@
-import { calcCartTotal, validateOrderForm, buildOrder, generateDeliverySlots } from './logic.js';
+import {
+  calcCartTotal,
+  validateOrderForm,
+  buildOrder,
+  generateDeliverySlots,
+  escapeHtml,
+  parseOrders,
+} from './logic.js';
 
 const MENU = [
   { id: 'soup-borsch', category: 'Супы', name: 'Борщ', price: 320 },
@@ -116,8 +123,7 @@ function saveOrder(order) {
 }
 
 function loadOrders() {
-  const raw = localStorage.getItem('orders');
-  return raw ? JSON.parse(raw) : [];
+  return parseOrders(localStorage.getItem('orders'));
 }
 
 function orderItemsHtml(items) {
@@ -128,14 +134,14 @@ function renderConfirmation(order) {
   const itemsHtml = orderItemsHtml(order.items);
   const deliveryLabel = order.deliveryTime === 'asap' ? 'Как можно скорее' : order.deliveryTime;
   const paymentLabel = order.payment === 'cash' ? 'Наличными курьеру' : 'Картой курьеру';
-  const commentHtml = order.comment ? `<p>Комментарий: ${order.comment}</p>` : '';
+  const commentHtml = order.comment ? `<p>Комментарий: ${escapeHtml(order.comment)}</p>` : '';
   document.getElementById('confirmation-details').innerHTML = `
     <div class="stamp">Заказ принят</div>
     <p>Номер заказа: ${order.id}</p>
     <ul class="order-items">${itemsHtml}</ul>
     <p>Итого: ${order.total} ₽</p>
     <p>Доставка: ${deliveryLabel}, оплата: ${paymentLabel}</p>
-    <p>${order.name}, ${order.address}, ${order.phone}</p>
+    <p>${escapeHtml(order.name)}, ${escapeHtml(order.address)}, ${escapeHtml(order.phone)}</p>
     ${commentHtml}
   `;
 }
@@ -200,10 +206,18 @@ function handleCheckoutSubmit(event) {
   }
 
   saveOrder(order);
+  resetCheckoutForm();
   cart = [];
   renderCart();
   renderConfirmation(order);
   showScreen('confirmation');
+}
+
+function resetCheckoutForm() {
+  document.getElementById('checkout-form').reset();
+  document.getElementById('error-name').textContent = '';
+  document.getElementById('error-address').textContent = '';
+  document.getElementById('error-phone').textContent = '';
 }
 
 function init() {

@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict';
-import { calcCartTotal, validateOrderForm, buildOrder, generateDeliverySlots } from './logic.js';
+import {
+  calcCartTotal,
+  validateOrderForm,
+  buildOrder,
+  generateDeliverySlots,
+  escapeHtml,
+  parseOrders,
+} from './logic.js';
 
 // calcCartTotal
 assert.strictEqual(calcCartTotal([]), 0);
@@ -61,5 +68,21 @@ assert.deepStrictEqual(
   generateDeliverySlots(new Date(2026, 7, 16, 18, 30), 2),
   ['18:30–19:00', '19:00–19:30']
 );
+
+// escapeHtml
+assert.strictEqual(
+  escapeHtml('<img src=x onerror="alert(1)">'),
+  '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'
+);
+assert.strictEqual(escapeHtml("O'Brien & Co"), 'O&#39;Brien &amp; Co');
+assert.strictEqual(escapeHtml('Иван Петров'), 'Иван Петров');
+
+// parseOrders
+assert.deepStrictEqual(parseOrders(null), []);
+assert.deepStrictEqual(parseOrders(''), []);
+assert.deepStrictEqual(parseOrders('not json'), []);
+assert.deepStrictEqual(parseOrders('null'), []);
+assert.deepStrictEqual(parseOrders('{"a":1}'), []);
+assert.deepStrictEqual(parseOrders('[{"id":"order-1"}]'), [{ id: 'order-1' }]);
 
 console.log('OK: all logic checks passed');
