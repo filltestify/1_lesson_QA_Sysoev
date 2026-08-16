@@ -352,6 +352,32 @@ const passed = actual.heading === expected.heading
   (reading 'map')` в `orderItemsHtml`. Доказательство:
   `screenshots/retest-bug2-variantB-still-crashes.jpg`.
 
+**Актуальный автоматизированный сценарий для варианта Б** (тот, что
+падает на текущем, уже частично исправленном коде — в отличие от
+сценария для варианта А выше, который сейчас, после фикса, будет
+проходить, и держится в репорте как исторический):
+```js
+// 1. localStorage.setItem('orders', JSON.stringify([{id:'order-broken-1', name:'Тест', address:'Адрес', phone:'123', total:500, timestamp: Date.now()}]))
+// 2. navigate → http://localhost:8765/ → клик «Мои заказы»
+// 3. ассерт (идентичен варианту А):
+const heading = document.querySelector('.screen-title')?.textContent.trim();
+const historyScreenHidden = document.getElementById('screen-history').hidden;
+const expected = { heading: 'Мои заказы', historyScreenHidden: false };
+const actual = { heading, historyScreenHidden };
+const passed = actual.heading === expected.heading
+  && actual.historyScreenHidden === expected.historyScreenHidden;
+```
+Фактический результат прогона на текущем коде (2026-08-16, после
+фикса):
+```json
+{
+  "scenario": "history screen opens after localStorage[\"orders\"] has an order missing the items field",
+  "expected": { "heading": "Мои заказы", "historyScreenHidden": false },
+  "actual": { "heading": "Меню", "historyScreenHidden": true },
+  "passed": false
+}
+```
+
 Баг 2 остаётся **открытым** как баг-репорт в целом, пока не закрыт
 вариант Б — заголовок и шаги воспроизведения выше не меняю, чтобы не
 терять историю; статус по каждому варианту зафиксирован здесь отдельно.
